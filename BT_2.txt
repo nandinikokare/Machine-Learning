@@ -1,0 +1,53 @@
+2. write a short contract on a test network for bank account of a customer for following operations : deposite money, withdraw money, show balance
+
+Here’s a simple smart contract in Solidity that could be deployed on an Ethereum test network, like Rinkeby or Goerli, to simulate a bank account with basic operations for deposit, withdrawal, and balance checking.
+
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+contract BankAccount {
+    address public owner;
+    uint256 private balance;
+
+    // Modifier to restrict access to only the account owner
+    modifier onlyOwner() {
+        require(msg.sender == owner, "Only the owner can perform this operation");
+        _;
+    }
+
+    // Constructor to set the owner of the contract
+    constructor() {
+        owner = msg.sender;
+        balance = 0;
+    }
+
+    // Function to deposit money into the account
+    function deposit() public payable onlyOwner {
+        require(msg.value > 0, "Deposit amount must be greater than zero");
+        balance += msg.value;
+    }
+
+    // Function to withdraw money from the account
+    function withdraw(uint256 amount) public onlyOwner {
+        require(amount <= balance, "Insufficient balance");
+        balance -= amount;
+        payable(msg.sender).transfer(amount);
+    }
+
+    // Function to check the balance of the account
+    function getBalance() public view onlyOwner returns (uint256) {
+        return balance;
+    }
+}
+
+
+Explanation of Functions
+Deposit: The deposit function allows the owner to send ether to the contract. It uses msg.value to get the amount sent, and it updates the contract’s balance.
+Withdraw: The withdraw function allows the owner to withdraw a specified amount, as long as the contract has enough balance.
+Check Balance: The getBalance function returns the current balance. Only the owner can check it.
+Testing on a Test Network
+To deploy this contract on a test network like Goerli or Rinkeby:
+
+Use a platform like Remix to compile and deploy.
+Connect MetaMask to the test network, fund your account with test ether, and deploy the contract.
+Use the contract’s functions to deposit, withdraw, and view balance.
